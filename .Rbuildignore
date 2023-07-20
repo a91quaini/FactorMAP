@@ -1,3 +1,5 @@
 ^FactorMAP\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
+^inst/data$
+^inst/examples$
