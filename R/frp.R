@@ -34,8 +34,8 @@
 #'
 #' @examples
 #' # import package data on 15 risk factors and 42 test asset excess returns
-#' factors = factors[,-1]
-#' returns = returns[,-1]
+#' factors = factors5FF[,-1]
+#' returns = returnsMEBTM25[,-1]
 #'
 #' # compute KRS factor risk premia and their standard errors
 #' frp = FRP(returns, factors, include_standard_errors = TRUE)
@@ -58,7 +58,7 @@ FRP = function(
 
   }
 
-  return(.Call(`_intrinsicFRP_FRPCpp`,
+  return(.Call(`_FactorMAP_FRPCpp`,
     returns,
     factors,
     misspecification_robust,

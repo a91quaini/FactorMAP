@@ -1,4 +1,3 @@
-
 # FactorMAP
 
 <!-- badges: start -->

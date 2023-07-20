@@ -166,7 +166,7 @@ Rcpp::List IterativeKleibergenPaap2006BetaRankTestCpp(
 /////////////////////////////////////////////////////////////
 ///// ChenFang2019BetaFullRankTestStatisticAndPvalueCpp /////
 
-arma::vec2 ChenFang2019BetaFullRankTestStatisticAndPvalueCpp(
+Rcpp::List ChenFang2019BetaFullRankTestStatisticAndPvalueCpp(
   const arma::mat& returns,
   const arma::mat& factors,
   const unsigned int n_bootstrap,
@@ -193,8 +193,7 @@ arma::vec2 ChenFang2019BetaFullRankTestStatisticAndPvalueCpp(
   arma::svd(U, sv, V, beta);
 
   // test statistic
-  arma::vec2 output;
-  output(0) = n_observations * sv(n_factors - 1) * sv(n_factors - 1);
+  const double statistic = n_observations * sv(n_factors - 1) * sv(n_factors - 1);
 
   // If `target_level_kp2006_rank_test <= 0`, the initial rank estimator is taken
   // to be the number of singular values above `n_observations^(-1/4)`.
@@ -202,7 +201,7 @@ arma::vec2 ChenFang2019BetaFullRankTestStatisticAndPvalueCpp(
   // the iterative Kleibergen Paap 2006 test with
   // `level = target_level_kp2006_rank_test / n_factors`.
   const unsigned int rank_estimate = target_level_kp2006_rank_test > 0. ?
-  IterativeKleibergenPaap2006BetaRankTestCpp(
+    IterativeKleibergenPaap2006BetaRankTestCpp(
       returns,
       factors,
       target_level_kp2006_rank_test
@@ -211,8 +210,13 @@ arma::vec2 ChenFang2019BetaFullRankTestStatisticAndPvalueCpp(
 
   // if full rank, return a p-value of 0
   if (rank_estimate == n_factors) {
-    output(1) = 0.;
-    return output;
+
+    // return a list containing the statistic and the p-value
+    return Rcpp::List::create(
+      Rcpp::Named("statistic") = statistic,
+      Rcpp::Named("pvalue") = 0.
+    );
+
   }
 
   const arma::mat U22 = U.tail_cols(n_returns - rank_estimate);
@@ -221,7 +225,7 @@ arma::vec2 ChenFang2019BetaFullRankTestStatisticAndPvalueCpp(
 
   const double sqrt_n_obs = std::sqrt(n_observations);
 
-  for (unsigned int boot = 0; boot < n_bootstrap; ++boot) {
+  for (unsigned int boot = 0; boot < n_bootstrap; boot++) {
 
     // bootstrap indices
     const arma::uvec boot_indices = arma::randi<arma::uvec>(
@@ -236,18 +240,19 @@ arma::vec2 ChenFang2019BetaFullRankTestStatisticAndPvalueCpp(
     ).t();
 
     // bootstrap minimum singular values
-    min_sv_boot(boot) = arma::min(arma::svd(
+    min_sv_boot(boot) = arma::svd(
       sqrt_n_obs * U22.t() * (beta_boot - beta) * V22
-    ));
+    )(n_factors - 1);
 
   }
 
-  // p-value
-  output(1) = (double)arma::sum(
-    min_sv_boot % min_sv_boot >= output(0)
-  ) / n_bootstrap;
-
-  return output;
+  // return a list containing the statistic and the p-value
+  return Rcpp::List::create(
+    Rcpp::Named("statistic") = statistic,
+    Rcpp::Named("pvalue") = (double)arma::sum(
+      min_sv_boot % min_sv_boot >= statistic
+    ) / n_bootstrap
+  );
 
 }
 
