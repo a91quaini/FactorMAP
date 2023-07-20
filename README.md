@@ -2,14 +2,15 @@
 
 <!-- badges: start -->
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![R-CMD-check](https://github.com/a91quaini/FactorMAP/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/a91quaini/FactorMAP/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 Estimation and inference for factor models in Asset Pricing.
 
-Alberto Quaini: Aut, Cre;
-Ali Moin: Aut, Cre;
-Gustavo Freire: Ctb.
+Alberto Quaini: Aut, Cre
+
+Ali Moin: Aut
+
+Gustavo Freire: Ctb
 
 ## Installation
 
