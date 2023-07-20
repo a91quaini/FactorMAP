@@ -2,7 +2,7 @@ Package: FactorMAP
 Title: Estimation and inference for factor models in Asset Pricing.
 Version: 0.0.0.9000
 Date: 2023-05-12
-Maintainer: Alberto Quaini <alberto91quaini@gmail.com>
+Maintainer: Ali Moins <amoin2k@gmail.com>
 Authors@R: 
     c(person(given = "Alberto", family = "Quaini", 
            email = "alberto91quaini@gmail.com", 
@@ -10,11 +10,11 @@ Authors@R:
            comment = c(ORCID = "0000-0002-1251-0599")),
       person(given = "Ali", family = "Moin", 
            email = "amoin2k@gmail.com", 
-           role = c("aut"),
+           role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0000-0000-0000")), 
       person(given = "Gustavo", family = "Freire", 
            email = "gustavobcpf@hotmail.com", 
-           role = c("ctb"),
+           role = c("ctb", "cph"),
            comment = c(ORCID = "0000-0000-0000-0000"))
     )
 Description: Estimation and inference for factor models in Asset Pricing.
@@ -27,3 +27,6 @@ LinkingTo:
     RcppArmadillo
 Imports: 
     Rcpp
+Depends: 
+    R (>= 2.10)
+LazyData: true

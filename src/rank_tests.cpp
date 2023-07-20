@@ -163,10 +163,10 @@ Rcpp::List IterativeKleibergenPaap2006BetaRankTestCpp(
 
 }
 
-///////////////////////////////////////
-///// ChenFang2019BetaRankTestCpp /////
+/////////////////////////////////////////////////////////////
+///// ChenFang2019BetaFullRankTestStatisticAndPvalueCpp /////
 
-double ChenFang2019BetaRankTestPvalueCpp(
+arma::vec2 ChenFang2019BetaFullRankTestStatisticAndPvalueCpp(
   const arma::mat& returns,
   const arma::mat& factors,
   const unsigned int n_bootstrap,
@@ -193,7 +193,8 @@ double ChenFang2019BetaRankTestPvalueCpp(
   arma::svd(U, sv, V, beta);
 
   // test statistic
-  const double statistic = n_observations * sv(n_factors - 1) * sv(n_factors - 1);
+  arma::vec2 output;
+  output(0) = n_observations * sv(n_factors - 1) * sv(n_factors - 1);
 
   // If `target_level_kp2006_rank_test <= 0`, the initial rank estimator is taken
   // to be the number of singular values above `n_observations^(-1/4)`.
@@ -209,7 +210,10 @@ double ChenFang2019BetaRankTestPvalueCpp(
     arma::sum(sv >= std::pow(n_observations, -1./4));
 
   // if full rank, return a p-value of 0
-  if (rank_estimate == n_factors) return 0.;
+  if (rank_estimate == n_factors) {
+    output(1) = 0.;
+    return output;
+  }
 
   const arma::mat U22 = U.tail_cols(n_returns - rank_estimate);
   const arma::mat V22 = V.tail_cols(n_factors - rank_estimate);
@@ -238,8 +242,12 @@ double ChenFang2019BetaRankTestPvalueCpp(
 
   }
 
-  // return the p-value
-  return (double)arma::sum(min_sv_boot % min_sv_boot >= statistic) / n_bootstrap;
+  // p-value
+  output(1) = (double)arma::sum(
+    min_sv_boot % min_sv_boot >= output(0)
+  ) / n_bootstrap;
+
+  return output;
 
 }
 

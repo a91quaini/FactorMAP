@@ -15,7 +15,7 @@
 // If `target_level_kp2006_rank_test <= 0`, the initial rank estimator is taken
 // to be the number of singular values above `n_observations^(-1/4)`.
 // It assumes n_factors < n_returns.
-double ChenFang2019BetaRankTestPvalueCpp(
+arma::vec2 ChenFang2019BetaFullRankTestStatisticAndPvalueCpp(
   const arma::mat& returns,
   const arma::mat& factors,
   const unsigned int n_bootstrap = 500,
