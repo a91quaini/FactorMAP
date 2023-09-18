@@ -18,7 +18,7 @@
 #' Monthly (percentage) excess returns on 25 portfolios sorted on
 #' size and book-to-market from 07/1963 to 05/2023:
 #'
-#' @format ## `returnsMEBTM25`
+#' @format ## `returns25MEBTM`
 #' A data frame with 719 rows and 26 columns:
 #' \describe{
 #'   \item{Date}{Date in yyyymm format}
@@ -26,14 +26,14 @@
 #'   \item{...}{...}
 #' }
 #' @source <https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html>
-"returnsMEBTM25"
+"returns25MEBTM"
 
 #' Industry test Asset excess Returns
 #'
 #' Monthly (percentage) excess returns on 17 industry portfolios
 #' from 07/1963 to 05/2023:
 #'
-#' @format ## `returnsIND17`
+#' @format ## `returns17IND`
 #' A data frame with 719 rows and 18 columns:
 #' \describe{
 #'   \item{Date}{Date in yyyymm format}
@@ -41,4 +41,4 @@
 #'   \item{...}{...}
 #' }
 #' @source <https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html>
-"returnsIND17"
+"returns17IND"

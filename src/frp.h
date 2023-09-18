@@ -12,13 +12,12 @@
 //' Compute factor risk premia
 //'
 //' @name FRPCpp
-//' @description Computes Fama MacBeth (1973) factor risk premia or
-//' misspecification-robust factor risk premia of Kan Robotti Shanken (2013)
-//' from data on test asset excess returns and risk factors.
-//' Optionally computes the corresponding heteroskedasticity and autocorrelation
-//' robust standard errors using the Newey-West (1994) plug-in procedure to
-//' select the number of relevant lags, i.e.,
-//' `n_lags = 4 * (n_observations/100)^(2/9)`.
+//' @description Computes Fama MacBeth (1973) factor risk premia or misspecification-robust factor
+//' risk premia of Kan Robotti Shanken (2013) from data on test asset excess
+//' returns and risk factors. Optionally computes the corresponding
+//' heteroskedasticity and autocorrelation robust standard errors using the
+//' Newey-West (1994) plug-in procedure to select the number of relevant lags,
+//' i.e., `n_lags = 4 * (n_observations/100)^(2/9)`.
 //'
 //' @param returns `n_observations x n_returns`-dimensional matrix of test asset
 //' excess returns.

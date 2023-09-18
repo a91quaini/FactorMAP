@@ -1,7 +1,7 @@
 test_that("Test FRP", {
 
   factors = factors5FF[,-1]
-  returns = returnsMEBTM25[,-1]
+  returns = returns25MEBTM[,-1]
 
   n_factors = ncol(factors)
   n_returns = ncol(returns)
@@ -21,6 +21,7 @@ test_that("Test FRP", {
     t(var_ret_inv_factor_loadings) %*% mean_returns
   )
 
+  expect_no_error(FRP(returns, factors))
   expect_no_error(FRP(returns, factors, include_standard_errors = TRUE))
   expect_no_error(FRP(returns, factors, misspecification_robust = FALSE, include_standard_errors = TRUE))
 
