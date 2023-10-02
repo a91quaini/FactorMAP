@@ -69,6 +69,29 @@ NULL
 #' @noRd
 NULL
 
+#' Compute the misspecification robust factor risk premia of Kan Robotti
+#' Shanken (2013) from moments extracted from data
+#'
+#' @name IterativeKRSFRP
+#' @description Computes misspecification-robust factor risk premia of
+#' Kan Robotti Shanken (2013) based on moments extracted from factors and test
+#' asset excess returns.
+#'
+#' @param beta `n_returns x n_factors`-dimensional regression coefficient
+#' matrix of test asset returns on risk factors: `beta =
+#' covariance(returns, factors) * variance(factors)^(-1)`.
+#' @param mean_returns `n_returns`-dimensional mean vector of test asset excess
+#' returns.
+#' @param weighting_matrix `n_returns x n_returns`-dimensional weighting
+#' matrix. Typically it is the inverse covariance matrix or the
+#' second-moment matrix of test asset excess returns, or the asymptotic
+#' covariance of the pricing errors.
+#'
+#' @return `n_factors`-dimensional vector of factor risk premia.
+#'
+#' @noRd
+NULL
+
 #' Compute the standard errors of Fama-MacBeth factor risk premia from moments
 #'
 #' @name StandardErrorsFRPCpp

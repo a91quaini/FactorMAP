@@ -106,6 +106,50 @@ arma::vec KRSFRPCpp(
 
 }
 
+//////////////////////////////
+///// IterativeKRSFRPCpp ////
+
+arma::vec IterativeKRSFRPCpp(
+  const arma::mat& returns, // N x Returns
+  arma::mat& factors, // N x Factors
+  arma::mat& beta, // Returns x Factors
+  arma::mat& covariance_factors_returns, // Factors x Returns
+  const arma::mat& variance_returns, // Returns x Returns
+  const arma::vec& mean_returns, // Returns
+  const arma::mat& weighting_matrix, // Returns x Returns
+  const double alpha
+) {
+
+  int number_of_factors = mean_returns.n_elem;
+  int bonferroni_constant = mean_returns.n_elem;
+
+  while (number_of_factors > 0) {
+    arma::vec frp = KRSFRPCpp(beta, mean_returns, weighting_matrix);
+
+    arma::vec se = StandardErrorsKRSFRPCpp(frp, returns, factors, beta,
+                                           covariance_factors_returns,
+                                           variance_returns, mean_returns);
+
+    arma::vec t_statistics = frp / se;
+
+    int factor_to_remove = arma::index_min(arma::abs(t_statistics));
+
+    double critical_value = R::qnorm(1 - (alpha / (2 * bonferroni_constant)),
+                                     0.0, 1.0, true, false);
+
+    if (std::abs(t_statistics(factor_to_remove)) > critical_value) {
+      break;
+    } else {
+      factors.shed_col(factor_to_remove);
+      beta.shed_col(factor_to_remove);
+      covariance_factors_returns.shed_row(factor_to_remove);
+    }
+  }
+
+  return KRSFRPCpp(beta, mean_returns, weighting_matrix);
+
+}
+
 ///////////////////////////////
 ///// StandardErrorsFRPCpp ////
 arma::vec StandardErrorsFRPCpp(
