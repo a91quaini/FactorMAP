@@ -138,6 +138,7 @@ arma::vec IterativeKRSFRPCpp(
                                      0.0, 1.0, true, false);
 
     if (std::abs(t_statistics(factor_to_remove)) > critical_value) {
+      return frp;
       break;
     } else {
       factors.shed_col(factor_to_remove);
@@ -146,7 +147,8 @@ arma::vec IterativeKRSFRPCpp(
     }
   }
 
-  return KRSFRPCpp(beta, mean_returns, weighting_matrix);
+  // TODO: Is this elegant to return if nothing survives iterative elimination?
+  return arma::vec();
 
 }
 
