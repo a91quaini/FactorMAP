@@ -69,25 +69,35 @@ NULL
 #' @noRd
 NULL
 
-#' Compute the misspecification robust factor risk premia of Kan Robotti
-#' Shanken (2013) from moments extracted from data
+#' Perform the iterative model selection procedure for KRS factor risk premia
+#' of Gospodinov Kan Robotti (2014) from moments extracted from data
 #'
-#' @name IterativeKRSFRP
-#' @description Computes misspecification-robust factor risk premia of
-#' Kan Robotti Shanken (2013) based on moments extracted from factors and test
-#' asset excess returns.
+#' @name IterativeKRSFRPCpp
+#' @description Performs the iterative model selection procedure for KRS factor
+#' risk premia of Gospodinov Kan Robotti (2014) based on moments extracted from
+#' factors and test asset excess returns.
 #'
+#' @param returns `n_observations x n_returns`-dimensional matrix of test asset
+#' excess returns.
+#' @param factors `n_observations x n_factors`-dimensional matrix of risk
+#' factors.
 #' @param beta `n_returns x n_factors`-dimensional regression coefficient
 #' matrix of test asset returns on risk factors: `beta =
 #' covariance(returns, factors) * variance(factors)^(-1)`.
+#' @param covariance_factors_returns `n_factors x n_returns`-dimensional
+#' covariance matrix between factors and  test asset excess returns.
+#' @param variance_returns `n_returns x n_returns`-dimensional covariance
+#' matrix of test asset excess returns.
 #' @param mean_returns `n_returns`-dimensional mean vector of test asset excess
 #' returns.
 #' @param weighting_matrix `n_returns x n_returns`-dimensional weighting
 #' matrix. Typically it is the inverse covariance matrix or the
 #' second-moment matrix of test asset excess returns, or the asymptotic
 #' covariance of the pricing errors.
+#' @param alpha significance level.
 #'
-#' @return `n_factors`-dimensional vector of factor risk premia.
+#' @return `n_factors - n_eliminated_factors`-dimensional vector
+#' of factor risk premia.
 #'
 #' @noRd
 NULL

@@ -126,9 +126,9 @@ arma::vec KRSFRPCpp(
 //' @noRd
 arma::vec IterativeKRSFRPCpp(
   const arma::mat& returns,
-  arma::mat& factors,
-  arma::mat& beta,
-  arma::mat& covariance_factors_returns,
+  const arma::mat& factors,
+  const arma::mat& beta,
+  const arma::mat& covariance_factors_returns,
   const arma::mat& variance_returns,
   const arma::vec& mean_returns,
   const arma::mat& weighting_matrix,

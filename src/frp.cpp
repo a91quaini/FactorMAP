@@ -111,23 +111,28 @@ arma::vec KRSFRPCpp(
 
 arma::vec IterativeKRSFRPCpp(
   const arma::mat& returns, // N x Returns
-  arma::mat& factors, // N x Factors
-  arma::mat& beta, // Returns x Factors
-  arma::mat& covariance_factors_returns, // Factors x Returns
+  const arma::mat& factors, // N x Factors
+  const arma::mat& beta, // Returns x Factors
+  const arma::mat& covariance_factors_returns, // Factors x Returns
   const arma::mat& variance_returns, // Returns x Returns
   const arma::vec& mean_returns, // Returns
   const arma::mat& weighting_matrix, // Returns x Returns
   const double alpha
 ) {
 
+
+  arma::mat factors_ = factors;
+  arma::mat beta_ = beta;
+  arma::mat covariance_factors_returns_ = covariance_factors_returns;
+
   int number_of_factors = mean_returns.n_elem;
   int bonferroni_constant = mean_returns.n_elem;
 
   while (number_of_factors > 0) {
-    arma::vec frp = KRSFRPCpp(beta, mean_returns, weighting_matrix);
+    arma::vec frp = KRSFRPCpp(beta_, mean_returns, weighting_matrix);
 
-    arma::vec se = StandardErrorsKRSFRPCpp(frp, returns, factors, beta,
-                                           covariance_factors_returns,
+    arma::vec se = StandardErrorsKRSFRPCpp(frp, returns, factors_, beta_,
+                                           covariance_factors_returns_,
                                            variance_returns, mean_returns);
 
     arma::vec t_statistics = frp / se;
@@ -141,9 +146,9 @@ arma::vec IterativeKRSFRPCpp(
       return frp;
       break;
     } else {
-      factors.shed_col(factor_to_remove);
-      beta.shed_col(factor_to_remove);
-      covariance_factors_returns.shed_row(factor_to_remove);
+      factors_.shed_col(factor_to_remove);
+      beta_.shed_col(factor_to_remove);
+      covariance_factors_returns_.shed_row(factor_to_remove);
     }
   }
 
