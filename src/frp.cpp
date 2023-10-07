@@ -128,27 +128,32 @@ arma::vec IterativeKRSFRPCpp(
   int number_of_factors = mean_returns.n_elem;
   int bonferroni_constant = mean_returns.n_elem;
 
-  while (number_of_factors > 0) {
-    arma::vec frp = KRSFRPCpp(beta_, mean_returns, weighting_matrix);
+  const double critical_value = R::qnorm(1 - (alpha / (2 * bonferroni_constant)),
+                                   0.0, 1.0, true, false);
 
-    arma::vec se = StandardErrorsKRSFRPCpp(frp, returns, factors_, beta_,
+  std::vector<unsigned int> kept_factors(factors.n_cols);
+  std::iota(kept_factors.begin(), kept_factors.end(), 0);
+
+  while (number_of_factors > 0) {
+    const arma::vec frp = KRSFRPCpp(beta_, mean_returns, weighting_matrix);
+
+    const arma::vec se = StandardErrorsKRSFRPCpp(frp, returns, factors_, beta_,
                                            covariance_factors_returns_,
                                            variance_returns, mean_returns);
 
-    arma::vec t_statistics = frp / se;
+    const arma::vec t_statistics = frp / se;
 
-    int factor_to_remove = arma::index_min(arma::abs(t_statistics));
-
-    double critical_value = R::qnorm(1 - (alpha / (2 * bonferroni_constant)),
-                                     0.0, 1.0, true, false);
+    const unsigned int factor_to_remove = arma::index_min(arma::abs(t_statistics));
 
     if (std::abs(t_statistics(factor_to_remove)) > critical_value) {
-      return frp;
+      return arma::conv_to<arma::vec>::from(kept_factors);
       break;
     } else {
+      kept_factors.erase(kept_factors.begin() + factor_to_remove);
       factors_.shed_col(factor_to_remove);
       beta_.shed_col(factor_to_remove);
       covariance_factors_returns_.shed_row(factor_to_remove);
+      --number_of_factors;
     }
   }
 
