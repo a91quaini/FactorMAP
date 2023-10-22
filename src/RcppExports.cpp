@@ -11,17 +11,6 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// test
-int test(const int a);
-RcppExport SEXP _FactorMAP_test(SEXP aSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const int >::type a(aSEXP);
-    rcpp_result_gen = Rcpp::wrap(test(a));
-    return rcpp_result_gen;
-END_RCPP
-}
 // AdaptiveWeightsCpp
 arma::vec AdaptiveWeightsCpp(const arma::mat& returns, const arma::mat& factors, const char type);
 RcppExport SEXP _FactorMAP_AdaptiveWeightsCpp(SEXP returnsSEXP, SEXP factorsSEXP, SEXP typeSEXP) {
@@ -46,6 +35,19 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const bool >::type misspecification_robust(misspecification_robustSEXP);
     Rcpp::traits::input_parameter< const bool >::type include_standard_errors(include_standard_errorsSEXP);
     rcpp_result_gen = Rcpp::wrap(FRPCpp(returns, factors, misspecification_robust, include_standard_errors));
+    return rcpp_result_gen;
+END_RCPP
+}
+// external_IterativeKRSFRPCpp
+Rcpp::List external_IterativeKRSFRPCpp(const arma::mat& returns, const arma::mat& factors, const double alpha);
+RcppExport SEXP _FactorMAP_external_IterativeKRSFRPCpp(SEXP returnsSEXP, SEXP factorsSEXP, SEXP alphaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type returns(returnsSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type factors(factorsSEXP);
+    Rcpp::traits::input_parameter< const double >::type alpha(alphaSEXP);
+    rcpp_result_gen = Rcpp::wrap(external_IterativeKRSFRPCpp(returns, factors, alpha));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -157,9 +159,9 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_FactorMAP_test", (DL_FUNC) &_FactorMAP_test, 1},
     {"_FactorMAP_AdaptiveWeightsCpp", (DL_FUNC) &_FactorMAP_AdaptiveWeightsCpp, 3},
     {"_FactorMAP_FRPCpp", (DL_FUNC) &_FactorMAP_FRPCpp, 4},
+    {"_FactorMAP_external_IterativeKRSFRPCpp", (DL_FUNC) &_FactorMAP_external_IterativeKRSFRPCpp, 3},
     {"_FactorMAP_ChenFang2019BetaRankTestCpp", (DL_FUNC) &_FactorMAP_ChenFang2019BetaRankTestCpp, 4},
     {"_FactorMAP_HJMisspecificationTestCpp", (DL_FUNC) &_FactorMAP_HJMisspecificationTestCpp, 2},
     {"_FactorMAP_OracleTFRPGCVCpp", (DL_FUNC) &_FactorMAP_OracleTFRPGCVCpp, 13},

@@ -106,10 +106,10 @@ arma::vec KRSFRPCpp(
 
 }
 
-//////////////////////////////
-///// IterativeKRSFRPCpp ////
+//////////////////////////////////////
+///// internal_IterativeKRSFRPCpp ////
 
-arma::vec IterativeKRSFRPCpp(
+arma::vec internal_IterativeKRSFRPCpp(
   const arma::mat& returns, // N x Returns
   const arma::mat& factors, // N x Factors
   const arma::mat& beta, // Returns x Factors
@@ -131,12 +131,12 @@ arma::vec IterativeKRSFRPCpp(
   const double critical_value = R::qnorm(1 - (alpha / (2 * bonferroni_constant)),
                                    0.0, 1.0, true, false);
 
+  Rprintf("the value of critical_value : %f \n", critical_value);
   std::vector<unsigned int> kept_factors(factors.n_cols);
   std::iota(kept_factors.begin(), kept_factors.end(), 0);
 
   while (number_of_factors > 0) {
     const arma::vec frp = KRSFRPCpp(beta_, mean_returns, weighting_matrix);
-
     const arma::vec se = StandardErrorsKRSFRPCpp(frp, returns, factors_, beta_,
                                            covariance_factors_returns_,
                                            variance_returns, mean_returns);
@@ -159,6 +159,40 @@ arma::vec IterativeKRSFRPCpp(
 
   // TODO: Is this elegant to return if nothing survives iterative elimination?
   return arma::vec();
+
+}
+
+//////////////////////////////////////
+///// external_IterativeKRSFRPCpp ////
+
+Rcpp::List external_IterativeKRSFRPCpp(
+    const arma::mat& returns,
+    const arma::mat& factors,
+    const double alpha
+) {
+
+  const arma::mat covariance_factors_returns = arma::cov(factors, returns);
+  const arma::mat variance_returns = arma::cov(returns);
+  const arma::vec mean_returns = arma::mean(returns).t();
+
+  const arma::mat beta = arma::solve(
+    arma::cov(factors),
+    covariance_factors_returns,
+    arma::solve_opts::likely_sympd
+  ).t();
+
+  return Rcpp::List::create(
+    Rcpp::Named("kept_factors") = internal_IterativeKRSFRPCpp(
+      returns,
+      factors,
+      beta,
+      covariance_factors_returns,
+      variance_returns,
+      mean_returns,
+      variance_returns,
+      alpha
+    )
+  );
 
 }
 

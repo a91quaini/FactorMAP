@@ -3,6 +3,7 @@
 export(ChenFang2019BetaRankTest)
 export(FRP)
 export(HJMisspecificationTest)
+export(IterativeKRSFRP)
 export(OracleTFRP)
 export(TFRP)
 importFrom(Rcpp,sourceCpp)
