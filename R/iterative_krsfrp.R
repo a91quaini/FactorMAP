@@ -43,10 +43,10 @@ IterativeKRSFRP = function(
   #
   # }
 
-  return(.Call(`_FactorMAP_external_IterativeKRSFRPCpp`,
+  return(1 + c(.Call(`_FactorMAP_external_IterativeKRSFRPCpp`,
                returns,
                factors,
                alpha
-  ))
+  )))
 
 }

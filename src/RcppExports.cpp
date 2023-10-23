@@ -39,7 +39,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // external_IterativeKRSFRPCpp
-Rcpp::List external_IterativeKRSFRPCpp(const arma::mat& returns, const arma::mat& factors, const double alpha);
+arma::vec external_IterativeKRSFRPCpp(const arma::mat& returns, const arma::mat& factors, const double alpha);
 RcppExport SEXP _FactorMAP_external_IterativeKRSFRPCpp(SEXP returnsSEXP, SEXP factorsSEXP, SEXP alphaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

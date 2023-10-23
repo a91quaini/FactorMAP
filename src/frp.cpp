@@ -125,15 +125,17 @@ arma::vec internal_IterativeKRSFRPCpp(
   arma::mat beta_ = beta;
   arma::mat covariance_factors_returns_ = covariance_factors_returns;
 
-  int number_of_factors = mean_returns.n_elem;
-  int bonferroni_constant = mean_returns.n_elem;
-
+  int number_of_factors = factors_.n_cols;
+  int bonferroni_constant = factors_.n_cols;
+  //Rcpp::Rcout << "bonferroni_constant: " << bonferroni_constant << std::endl;
   const double critical_value = R::qnorm(1 - (alpha / (2 * bonferroni_constant)),
                                    0.0, 1.0, true, false);
 
-  Rprintf("the value of critical_value : %f \n", critical_value);
-  std::vector<unsigned int> kept_factors(factors.n_cols);
-  std::iota(kept_factors.begin(), kept_factors.end(), 0);
+  //Rcpp::Rcout << "critical_value: " << critical_value << std::endl;
+  //Rprintf("the value of critical_value : %f \n", critical_value);
+  // std::vector<unsigned int> kept_factors(factors.n_cols);
+  // std::iota(kept_factors.begin(), kept_factors.end(), 0);
+  arma::vec kept_factors = arma::linspace<arma::vec>(0, factors.n_cols - 1, factors.n_cols);
 
   while (number_of_factors > 0) {
     const arma::vec frp = KRSFRPCpp(beta_, mean_returns, weighting_matrix);
@@ -142,14 +144,17 @@ arma::vec internal_IterativeKRSFRPCpp(
                                            variance_returns, mean_returns);
 
     const arma::vec t_statistics = frp / se;
-
+    //Rcpp::Rcout << "t_statistics: " << t_statistics.t() << std::endl;
     const unsigned int factor_to_remove = arma::index_min(arma::abs(t_statistics));
-
+    //Rcpp::Rcout << "kept_factors: " << kept_factors << std::endl;
     if (std::abs(t_statistics(factor_to_remove)) > critical_value) {
-      return arma::conv_to<arma::vec>::from(kept_factors);
-      break;
+      //Rprintf("I'm returning");
+      //Rcpp::Rcout << "kept_factors: " << kept_factors << std::endl;
+      // return arma::conv_to<arma::vec>::from(kept_factors);
+      return kept_factors;
     } else {
-      kept_factors.erase(kept_factors.begin() + factor_to_remove);
+      //kept_factors.erase(kept_factors.begin() + factor_to_remove);
+      kept_factors.shed_row(factor_to_remove);
       factors_.shed_col(factor_to_remove);
       beta_.shed_col(factor_to_remove);
       covariance_factors_returns_.shed_row(factor_to_remove);
@@ -157,7 +162,7 @@ arma::vec internal_IterativeKRSFRPCpp(
     }
   }
 
-  // TODO: Is this elegant to return if nothing survives iterative elimination?
+  //Rcpp::warning("All factors have been eliminated.");
   return arma::vec();
 
 }
@@ -165,7 +170,7 @@ arma::vec internal_IterativeKRSFRPCpp(
 //////////////////////////////////////
 ///// external_IterativeKRSFRPCpp ////
 
-Rcpp::List external_IterativeKRSFRPCpp(
+arma::vec external_IterativeKRSFRPCpp(
     const arma::mat& returns,
     const arma::mat& factors,
     const double alpha
@@ -181,8 +186,7 @@ Rcpp::List external_IterativeKRSFRPCpp(
     arma::solve_opts::likely_sympd
   ).t();
 
-  return Rcpp::List::create(
-    Rcpp::Named("kept_factors") = internal_IterativeKRSFRPCpp(
+  return internal_IterativeKRSFRPCpp(
       returns,
       factors,
       beta,
@@ -191,7 +195,6 @@ Rcpp::List external_IterativeKRSFRPCpp(
       mean_returns,
       variance_returns,
       alpha
-    )
   );
 
 }

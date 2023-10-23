@@ -168,7 +168,7 @@ arma::vec internal_IterativeKRSFRPCpp(
 //' @noRd
 //'
 // [[Rcpp::export]]
-Rcpp::List external_IterativeKRSFRPCpp(
+arma::vec external_IterativeKRSFRPCpp(
   const arma::mat& returns,
   const arma::mat& factors,
   const double alpha
