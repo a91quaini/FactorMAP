@@ -11,6 +11,20 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// FMBCpp
+Rcpp::List FMBCpp(const arma::mat& returns, const arma::mat& factors, const bool include_intercept, const bool include_standard_errors);
+RcppExport SEXP _FactorMAP_FMBCpp(SEXP returnsSEXP, SEXP factorsSEXP, SEXP include_interceptSEXP, SEXP include_standard_errorsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type returns(returnsSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type factors(factorsSEXP);
+    Rcpp::traits::input_parameter< const bool >::type include_intercept(include_interceptSEXP);
+    Rcpp::traits::input_parameter< const bool >::type include_standard_errors(include_standard_errorsSEXP);
+    rcpp_result_gen = Rcpp::wrap(FMBCpp(returns, factors, include_intercept, include_standard_errors));
+    return rcpp_result_gen;
+END_RCPP
+}
 // AdaptiveWeightsCpp
 arma::vec AdaptiveWeightsCpp(const arma::mat& returns, const arma::mat& factors, const char type);
 RcppExport SEXP _FactorMAP_AdaptiveWeightsCpp(SEXP returnsSEXP, SEXP factorsSEXP, SEXP typeSEXP) {
@@ -159,6 +173,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_FactorMAP_FMBCpp", (DL_FUNC) &_FactorMAP_FMBCpp, 4},
     {"_FactorMAP_AdaptiveWeightsCpp", (DL_FUNC) &_FactorMAP_AdaptiveWeightsCpp, 3},
     {"_FactorMAP_FRPCpp", (DL_FUNC) &_FactorMAP_FRPCpp, 4},
     {"_FactorMAP_external_IterativeKRSFRPCpp", (DL_FUNC) &_FactorMAP_external_IterativeKRSFRPCpp, 3},
