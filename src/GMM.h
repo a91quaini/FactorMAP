@@ -23,7 +23,7 @@
 //' excess returns.
 //' @param factors `n_observations x n_factors`-dimensional matrix of risk
 //' factors.
-//' @param misspecification_robust boolean `TRUE` for the
+//' @param include_intercept boolean `TRUE` for the
 //' "misspecification-robust" Kar Robotti Shanken GLS approach using the
 //' inverse covariance matrix of returns; `FALSE` for standard Fama-Mac-Beth
 //' risk premia. Default is `TRUE`.

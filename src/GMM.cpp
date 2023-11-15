@@ -1,5 +1,5 @@
 // Author: Ali Moin
-
+// devtools::document()
 #include "GMM.h"
 #include "hac_standard_errors.h"
 
@@ -33,7 +33,27 @@ Rcpp::List FMBCpp(
     const arma::mat SST = (returns.each_row() - mean_returns.t()).t() * (returns.each_row() - mean_returns.t());
     const arma::mat cov_iid_residuals = (1.0 / n_obs) * SSR;
 
-    // Prepare output
+    arma::mat A, iota_beta, Theta, Theta_gls;
+    arma::vec Lambda, Lambda_gls;
+    double const_val = arma::datum::nan, const_gls = arma::datum::nan;
+    if (include_intercept) {
+      // Cross-sectional regression with intercept
+      iota_beta = arma::join_horiz(arma::ones(n_assets), beta);
+      A = arma::solve(iota_beta.t() * iota_beta, iota_beta.t());
+      Theta = A * mean_returns;
+      Lambda = Theta.submat(1, 0, n_factors, 0);
+      Theta_gls = arma::solve(iota_beta.t() * arma::inv(arma::cov(returns)) * iota_beta, iota_beta.t() * arma::inv(arma::cov(returns)) * mean_returns);
+      Lambda_gls = Theta_gls.submat(1, 0, n_factors, 0);
+      const_val = Theta(0, 0);
+      const_gls = Theta_gls(0, 0);
+    } else {
+      // Cross-sectional regression without intercept
+      A = arma::solve(beta.t() * beta, beta.t());
+      Lambda = A * mean_returns;
+      Lambda_gls = arma::solve(beta.t() * arma::inv(arma::cov(returns)) * beta, beta.t() * arma::inv(arma::cov(returns)) * mean_returns);
+    }
+
+    // Temporary output
     return Rcpp::List::create(
       Rcpp::Named("alpha") = alpha,
       Rcpp::Named("beta") = beta,
@@ -43,24 +63,4 @@ Rcpp::List FMBCpp(
       Rcpp::Named("SST") = SST,
       Rcpp::Named("cov_iid_residuals") = cov_iid_residuals
     );
-
-    // arma::mat A, iota_beta, Theta, Theta_gls;
-    // arma::vec Lambda, Lambda_gls;
-    // double const_val = arma::datum::nan, const_gls = arma::datum::nan;
-    // if (include_intercept) {
-    //   // Cross-sectional regression with intercept
-    //   iota_beta = arma::join_horiz(arma::ones(n_assets), beta);
-    //   A = arma::solve(iota_beta.t() * iota_beta, iota_beta.t());
-    //   Theta = A * mean_returns;
-    //   Lambda = Theta.submat(1, 0, n_factors, 0);
-    //   Theta_gls = arma::solve(iota_beta.t() * arma::inv(arma::cov(returns)) * iota_beta, iota_beta.t() * arma::inv(arma::cov(returns)) * mean_returns);
-    //   Lambda_gls = Theta_gls.submat(1, 0, n_factors, 0);
-    //   const_val = Theta(0, 0);
-    //   const_gls = Theta_gls(0, 0);
-    // } else {
-    //   // Cross-sectional regression without intercept
-    //   A = arma::solve(beta.t() * beta, beta.t());
-    //   Lambda = A * mean_returns;
-    //   Lambda_gls = arma::solve(beta.t() * arma::inv(arma::cov(returns)) * beta, beta.t() * arma::inv(arma::cov(returns)) * mean_returns);
-    // }
 }
